@@ -170,11 +170,11 @@ class BaseDataset(Dataset):
 
         # Get SMPL parameters, if available
         if self.has_smpl:
-	    pose = self.pose[index].copy()
-	    betas = self.betas[index].copy()
+            pose = self.pose[index].copy()
+            betas = self.betas[index].copy()
         else:
-	    pose = np.zeros(72)
-	    betas = np.zeros(10)
+            pose = np.zeros(72)
+            betas = np.zeros(10)
 
         # Process image
         img = self.rgb_processing(img, center, sc*scale, rot, flip, pn)
