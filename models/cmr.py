@@ -1,5 +1,6 @@
 """
-This file provides a wrapper around GraphCNN and SMPLParamRegressor and is useful for inference since it fuses both forward passes in one.
+This file provides a wrapper around GraphCNN and SMPLParamRegressor and is useful for inference 
+since it fuses both forward passes in one.
 It returns both the non-parametric and parametric shapes, as well as the camera and the regressed SMPL parameters.
 """
 import torch

@@ -54,5 +54,6 @@ class CheckpointDataLoader(DataLoader):
         else:
             self.checkpoint_batch_idx = 0
 
-        super(CheckpointDataLoader, self).__init__(dataset, sampler=sampler, shuffle=False, batch_size=batch_size, num_workers=num_workers,
-                                                   drop_last=drop_last, pin_memory=pin_memory, timeout=timeout, worker_init_fn=None)
+        super(CheckpointDataLoader, self).__init__(dataset, sampler=sampler, shuffle=False, 
+            batch_size=batch_size, num_workers=num_workers,
+            drop_last=drop_last, pin_memory=pin_memory, timeout=timeout, worker_init_fn=None)

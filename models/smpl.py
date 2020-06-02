@@ -35,7 +35,8 @@ class SMPL(nn.Module):
         self.register_buffer('faces', torch.from_numpy(smpl_model['f'].astype(np.int64)))
         self.register_buffer('kintree_table', torch.from_numpy(smpl_model['kintree_table'].astype(np.int64)))
         id_to_col = {self.kintree_table[1, i].item(): i for i in range(self.kintree_table.shape[1])}
-        self.register_buffer('parent', torch.LongTensor([id_to_col[self.kintree_table[0, it].item()] for it in range(1, self.kintree_table.shape[1])]))
+        self.register_buffer('parent', torch.LongTensor(
+            [id_to_col[self.kintree_table[0, it].item()] for it in range(1, self.kintree_table.shape[1])]))
 
         self.pose_shape = [24, 3]
         self.beta_shape = [10]
@@ -93,7 +94,8 @@ class SMPL(nn.Module):
         rest = torch.cat([zeros, rest], dim=-1)
         rest = torch.matmul(G, rest)
         G = G - rest
-        T = torch.matmul(self.weights, G.permute(1,0,2,3).contiguous().view(24,-1)).view(6890, batch_size, 4, 4).transpose(0,1)
+        T = torch.matmul(
+            self.weights, G.permute(1,0,2,3).contiguous().view(24,-1)).view(6890, batch_size, 4, 4).transpose(0,1)
         rest_shape_h = torch.cat([v_posed, torch.ones_like(v_posed)[:, :, [0]]], dim=-1)
         v = torch.matmul(T, rest_shape_h[:, :, :, None])[:, :, :3, 0]
         return v

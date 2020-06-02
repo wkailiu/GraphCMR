@@ -37,7 +37,8 @@ class PartRenderer(object):
     def __call__(self, vertices, camera):
         """Wrapper function for rendering process."""
         # Estimate camera parameters given a fixed focal length
-        cam_t = torch.stack([camera[:,1], camera[:,2], 2*self.focal_length/(self.render_res * camera[:,0] +1e-9)],dim=-1)
+        cam_t = torch.stack([camera[:,1], camera[:,2], 2*self.focal_length/(self.render_res * camera[:,0] +1e-9)],
+                            dim=-1)
         batch_size = vertices.shape[0]
         K = torch.eye(3, device=vertices.device)
         K[0,0] = self.focal_length 
@@ -48,6 +49,7 @@ class PartRenderer(object):
         K = K[None, :, :].expand(batch_size, -1, -1)
         R = torch.eye(3, device=vertices.device)[None, :, :].expand(batch_size, -1, -1)
         faces = self.faces[None, :, :].expand(batch_size, -1, -1)
-        parts, _, mask =  self.neural_renderer(vertices, faces, textures=self.textures.expand(batch_size, -1, -1, -1, -1, -1), K=K, R=R, t=cam_t.unsqueeze(1))
+        parts, _, mask =  self.neural_renderer(vertices, faces, 
+            textures=self.textures.expand(batch_size, -1, -1, -1, -1, -1), K=K, R=R, t=cam_t.unsqueeze(1))
         parts = self.get_parts(parts, mask)
         return mask, parts

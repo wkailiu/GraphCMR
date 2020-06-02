@@ -2,27 +2,39 @@
 """
 Demo code
 
-To run our method, you need a bounding box around the person. The person needs to be centered inside the bounding box and the bounding box should be relatively tight. You can either supply the bounding box directly or provide an [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) detection file. In the latter case we infer the bounding box from the detections.
+To run our method, you need a bounding box around the person. 
+The person needs to be centered inside the bounding box and the bounding box should be relatively tight. 
+You can either supply the bounding box directly or provide an 
+[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) detection file. 
+In the latter case we infer the bounding box from the detections.
 
 In summary, we provide 3 different ways to use our demo code and models:
-1. Provide only an input image (using ```--img```), in which case it is assumed that it is already cropped with the person centered in the image.
-2. Provide an input image as before, together with the OpenPose detection .json (using ```--openpose```). Our code will use the detections to compute the bounding box and crop the image.
-3. Provide an image and a bounding box (using ```--bbox```). The expected format for the json file can be seen in ```examples/im1010_bbox.json```.
+1. Provide only an input image (using ```--img```), 
+    in which case it is assumed that it is already cropped with the person centered in the image.
+2. Provide an input image as before, together with the OpenPose detection .json (using ```--openpose```). 
+    Our code will use the detections to compute the bounding box and crop the image.
+3. Provide an image and a bounding box (using ```--bbox```). The expected format for the json file can be seen 
+    in ```examples/im1010_bbox.json```.
 
 Example with OpenPose detection .json
 ```
-python demo.py --checkpoint=data/models/model_checkpoint_h36m_up3d_extra2d.pt --img=examples/im1010.png --openpose=examples/im1010_openpose.json
+python demo.py --checkpoint=data/models/model_checkpoint_h36m_up3d_extra2d.pt --img=examples/im1010.png 
+    --openpose=examples/im1010_openpose.json
 ```
 Example with predefined Bounding Box
 ```
-python demo.py --checkpoint=data/models/model_checkpoint_h36m_up3d_extra2d.pt --img=examples/im1010.png --bbox=examples/im1010_bbox.json
+python demo.py --checkpoint=data/models/model_checkpoint_h36m_up3d_extra2d.pt --img=examples/im1010.png 
+    --bbox=examples/im1010_bbox.json
 ```
 Example with cropped and centered image
 ```
 python demo.py --checkpoint=data/models/model_checkpoint_h36m_up3d_extra2d.pt --img=examples/im1010.png
 ```
 
-Running the previous command will save the results in ```examples/im1010_{gcnn,smpl,gcnn_side,smpl_side}.png```. The files ```im1010_gcnn``` and ```im1010_smpl``` show the overlayed reconstructions of the non-parametric and parametric shapes respectively. We also render side views, saved in ```im1010_gcnn_side.png``` and ```im1010_smpl_side.png```.
+Running the previous command will save the results in ```examples/im1010_{gcnn,smpl,gcnn_side,smpl_side}.png```. 
+The files ```im1010_gcnn``` and ```im1010_smpl``` show the overlayed reconstructions of the non-parametric and 
+parametric shapes respectively. We also render side views, saved in ```im1010_gcnn_side.png``` and 
+```im1010_smpl_side.png```.
 """
 from __future__ import division
 from __future__ import print_function
@@ -45,7 +57,8 @@ parser.add_argument('--checkpoint', default=None, help='Path to pretrained check
 parser.add_argument('--img', type=str, required=True, help='Path to input image')
 parser.add_argument('--bbox', type=str, default=None, help='Path to .json file containing bounding box coordinates')
 parser.add_argument('--openpose', type=str, default=None, help='Path to .json containing openpose detections')
-parser.add_argument('--outfile', type=str, default=None, help='Filename of output images. If not set use input filename.')
+parser.add_argument('--outfile', type=str, default=None, 
+    help='Filename of output images. If not set use input filename.')
 
 def bbox_from_openpose(openpose_file, rescale=1.2, detection_thresh=0.2):
     """Get center and scale for bounding box from openpose detections."""
@@ -118,7 +131,8 @@ if __name__ == '__main__':
         pred_vertices, pred_vertices_smpl, pred_camera, _, _ = model(norm_img.cuda())
         
     # Calculate camera parameters for rendering
-    camera_translation = torch.stack([pred_camera[:,1], pred_camera[:,2], 2*cfg.FOCAL_LENGTH/(cfg.INPUT_RES * pred_camera[:,0] +1e-9)],dim=-1)
+    camera_translation = torch.stack([pred_camera[:,1], pred_camera[:,2], 
+        2*cfg.FOCAL_LENGTH/(cfg.INPUT_RES * pred_camera[:,0] +1e-9)],dim=-1)
     camera_translation = camera_translation[0].cpu().numpy()
     pred_vertices = pred_vertices[0].cpu().numpy()
     pred_vertices_smpl = pred_vertices_smpl[0].cpu().numpy()

@@ -24,7 +24,8 @@ class BaseTrainer(object):
 
         self.checkpoint = None
         if self.options.resume and self.saver.exists_checkpoint():
-            self.checkpoint = self.saver.load_checkpoint(self.models_dict, self.optimizers_dict, checkpoint_file=self.options.checkpoint)
+            self.checkpoint = self.saver.load_checkpoint(self.models_dict, self.optimizers_dict, 
+                checkpoint_file=self.options.checkpoint)
 
         if self.checkpoint is None:
             self.epoch_count = 0
@@ -47,7 +48,8 @@ class BaseTrainer(object):
     def train(self):
         """Training process."""
         # Run training for num_epochs epochs
-        for epoch in tqdm(range(self.epoch_count, self.options.num_epochs), total=self.options.num_epochs, initial=self.epoch_count):
+        for epoch in tqdm(range(self.epoch_count, self.options.num_epochs), total=self.options.num_epochs, 
+            initial=self.epoch_count):
             # Create new DataLoader every epoch and (possibly) resume from an arbitrary step inside an epoch
             train_data_loader = CheckpointDataLoader(self.train_ds,checkpoint=self.checkpoint,
                                                      batch_size=self.options.batch_size,
@@ -69,7 +71,8 @@ class BaseTrainer(object):
                         self.train_summaries(batch, *out)
                     # Save checkpoint every checkpoint_steps steps
                     if self.step_count % self.options.checkpoint_steps == 0:
-                        self.saver.save_checkpoint(self.models_dict, self.optimizers_dict, epoch, step+1, self.options.batch_size, train_data_loader.sampler.dataset_perm, self.step_count) 
+                        self.saver.save_checkpoint(self.models_dict, self.optimizers_dict, epoch, step+1, 
+                            self.options.batch_size, train_data_loader.sampler.dataset_perm, self.step_count) 
                         tqdm.write('Checkpoint saved')
 
                     # Run validation every test_steps steps
@@ -77,7 +80,8 @@ class BaseTrainer(object):
                         self.test()
                 else:
                     tqdm.write('Timeout reached')
-                    self.saver.save_checkpoint(self.models_dict, self.optimizers_dict, epoch, step, self.options.batch_size, train_data_loader.sampler.dataset_perm, self.step_count) 
+                    self.saver.save_checkpoint(self.models_dict, self.optimizers_dict, epoch, step, 
+                        self.options.batch_size, train_data_loader.sampler.dataset_perm, self.step_count) 
                     tqdm.write('Checkpoint saved')
                     sys.exit(0)
 
@@ -87,7 +91,8 @@ class BaseTrainer(object):
             # save checkpoint after each epoch
             if (epoch+1) % 10 == 0:
                 # self.saver.save_checkpoint(self.models_dict, self.optimizers_dict, epoch+1, 0, self.step_count) 
-                self.saver.save_checkpoint(self.models_dict, self.optimizers_dict, epoch+1, 0, self.options.batch_size, None, self.step_count) 
+                self.saver.save_checkpoint(self.models_dict, self.optimizers_dict, epoch+1, 0, 
+                    self.options.batch_size, None, self.step_count) 
         return
 
     # The following methods (with the possible exception of test) have to be implemented in the derived classes

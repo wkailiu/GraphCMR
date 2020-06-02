@@ -205,7 +205,8 @@ def draw_text(input_image, content):
     return image
 
 
-def visualize_reconstruction(img, img_size, gt_kp, vertices, pred_kp, camera, renderer, color='pink', focal_length=1000):
+def visualize_reconstruction(img, img_size, gt_kp, vertices, pred_kp, camera, renderer, color='pink', 
+                            focal_length=1000):
     """Overlays gt_kp and pred_kp on img.
     Draws vert with text.
     Renderer is an instance of SMPLRenderer.

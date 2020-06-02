@@ -1,11 +1,14 @@
 #!/usr/bin/python
 """
-This script can be used to evaluate a trained model on 3D pose/shape and masks/part segmentation. You first need to download the datasets and preprocess them.
+This script can be used to evaluate a trained model on 3D pose/shape and masks/part segmentation. 
+You first need to download the datasets and preprocess them.
 Example usage:
 ```
-python eval.py --checkpoint=data/models/model_checkpoint_h36m_up3d.pt --config=data/config.json --dataset=h36m-p1 --log_freq=20
+python eval.py --checkpoint=data/models/model_checkpoint_h36m_up3d.pt --config=data/config.json 
+--dataset=h36m-p1 --log_freq=20
 ```
-Running the above command will compute the MPJPE and Reconstruction Error on the Human3.6M dataset (Protocol I). The ```--dataset``` option can take different values based on the type of evaluation you want to perform:
+Running the above command will compute the MPJPE and Reconstruction Error on the Human3.6M dataset (Protocol I). 
+The ```--dataset``` option can take different values based on the type of evaluation you want to perform:
 1. Human3.6M Protocol 1 ```--dataset=h36m-p1```
 2. Human3.6M Protocol 2 ```--dataset=h36m-p2```
 3. UP-3D ```--dataset=up-3d```
@@ -35,7 +38,8 @@ from utils.mesh import Mesh
 # Define command-line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--checkpoint', default=None, help='Path to network checkpoint')
-parser.add_argument('--dataset', default='h36m-p1', choices=['h36m-p1', 'h36m-p2', 'up-3d', 'lsp'], help='Choose evaluation dataset')
+parser.add_argument('--dataset', default='h36m-p1', choices=['h36m-p1', 'h36m-p2', 'up-3d', 'lsp'], 
+    help='Choose evaluation dataset')
 parser.add_argument('--config', default=None, help='Path to config file containing model architecture etc.')
 parser.add_argument('--log_freq', default=50, type=int, help='Frequency of printing intermediate results')
 parser.add_argument('--batch_size', default=32, help='Batch size for testing')
@@ -141,13 +145,16 @@ def run_evaluation(model, dataset_name, dataset,
 
             # Absolute error (MPJPE)
             error = torch.sqrt(((pred_keypoints_3d - gt_keypoints_3d) ** 2).sum(dim=-1)).mean(dim=-1).cpu().numpy()
-            error_smpl = torch.sqrt( ((pred_keypoints_3d_smpl - gt_keypoints_3d) ** 2).sum(dim=-1)).mean(dim=-1).cpu().numpy()
+            error_smpl = torch.sqrt( 
+                ((pred_keypoints_3d_smpl - gt_keypoints_3d) ** 2).sum(dim=-1)).mean(dim=-1).cpu().numpy()
             mpjpe[step * batch_size:step * batch_size + curr_batch_size] = error
             mpjpe_smpl[step * batch_size:step * batch_size + curr_batch_size] = error_smpl
 
             # Reconstuction_error
-            r_error = reconstruction_error(pred_keypoints_3d.cpu().numpy(), gt_keypoints_3d.cpu().numpy(), reduction=None)
-            r_error_smpl = reconstruction_error(pred_keypoints_3d_smpl.cpu().numpy(), gt_keypoints_3d.cpu().numpy(), reduction=None)
+            r_error = reconstruction_error(pred_keypoints_3d.cpu().numpy(), gt_keypoints_3d.cpu().numpy(), 
+                reduction=None)
+            r_error_smpl = reconstruction_error(pred_keypoints_3d_smpl.cpu().numpy(), 
+                gt_keypoints_3d.cpu().numpy(), reduction=None)
             recon_err[step * batch_size:step * batch_size + curr_batch_size] = r_error
             recon_err_smpl[step * batch_size:step * batch_size + curr_batch_size] = r_error_smpl
 

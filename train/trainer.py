@@ -37,10 +37,11 @@ class Trainer(BaseTrainer):
         self.smpl_param_regressor = SMPLParamRegressor().to(self.device)
 
         # Setup a joint optimizer for the 2 models
-        self.optimizer = torch.optim.Adam(params=list(self.graph_cnn.parameters()) + list(self.smpl_param_regressor.parameters()),
-                                           lr=self.options.lr,
-                                           betas=(self.options.adam_beta1, 0.999),
-                                           weight_decay=self.options.wd)
+        self.optimizer = torch.optim.Adam(
+            params=list(self.graph_cnn.parameters()) + list(self.smpl_param_regressor.parameters()),
+            lr=self.options.lr,
+            betas=(self.options.adam_beta1, 0.999),
+            weight_decay=self.options.wd)
 
         # SMPL model
         self.smpl = SMPL().to(self.device)
@@ -168,8 +169,8 @@ class Trainer(BaseTrainer):
         loss_keypoints_smpl = self.keypoint_loss(pred_keypoints_2d_smpl, gt_keypoints_2d)
         loss_keypoints_3d_smpl = self.keypoint_3d_loss(pred_keypoints_3d_smpl, gt_keypoints_3d, has_pose_3d)
         loss_shape_smpl = self.shape_loss(pred_vertices_smpl, gt_vertices, has_smpl)
-        loss_regr_pose, loss_regr_betas = self.smpl_losses(pred_rotmat, pred_shape, gt_pose, gt_betas, has_smpl)                                                
-
+        loss_regr_pose, loss_regr_betas = self.smpl_losses(pred_rotmat, pred_shape, gt_pose, gt_betas, has_smpl)
+        
         # Add losses to compute the total loss
         loss = loss_shape_smpl + loss_keypoints_smpl + loss_keypoints_3d_smpl +\
                loss_regr_pose + 0.1 * loss_regr_betas + loss_shape + loss_keypoints + loss_keypoints_3d
@@ -213,8 +214,10 @@ class Trainer(BaseTrainer):
             cam = pred_camera[i].cpu().numpy()
             cam = pred_camera[i].cpu().numpy()
             # Visualize reconstruction and detected pose
-            rend_img = visualize_reconstruction(img, self.options.img_res, gt_keypoints_2d_, vertices, pred_keypoints_2d_, cam, self.renderer)
-            rend_img_smpl = visualize_reconstruction(img, self.options.img_res, gt_keypoints_2d_, vertices_smpl, pred_keypoints_2d_smpl_, cam, self.renderer)
+            rend_img = visualize_reconstruction(img, self.options.img_res, gt_keypoints_2d_, 
+                vertices, pred_keypoints_2d_, cam, self.renderer)
+            rend_img_smpl = visualize_reconstruction(img, self.options.img_res, gt_keypoints_2d_, 
+                vertices_smpl, pred_keypoints_2d_smpl_, cam, self.renderer)
             rend_img = rend_img.transpose(2,0,1)
             rend_img_smpl = rend_img_smpl.transpose(2,0,1)
             rend_imgs.append(torch.from_numpy(rend_img))
